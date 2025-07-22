@@ -1,48 +1,32 @@
+// server.js
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
-app.use(express.json());
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
+
+// Middleware
 app.use(cors());
+app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/WeatherSystem', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+// MongoDB connection
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => {
+    console.error('❌ MongoDB connection error:', err.message);
+    process.exit(1);
+  });
+
+// Example route
+app.get('/', (req, res) => {
+  res.send('🌦️ Weather backend is running!');
 });
 
-// Define schema & model
-const cityWeatherSchema = new mongoose.Schema({
-  city: String,
-  country: String,
-  temp: Number,
-  main: String,
-  weatherDesc: String,
-  humidity: Number,
-  wind: Number,
-  searchedAt: { type: Date, default: Date.now }
+// Start server
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
-const CityWeather = mongoose.model('CityWeather', cityWeatherSchema);
-
-// Save search to database with logging
-app.post('/api/search', async (req, res) => {
-  console.log('Received data:', req.body); // <--- THIS LINE HELPS YOU DEBUG
-  try {
-    const weather = new CityWeather(req.body);
-    await weather.save();
-    res.status(201).json({ message: 'Saved!' });
-  } catch (err) {
-    console.error('Error saving to MongoDB:', err); // also log errors
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Get all searches (for testing)
-app.get('/api/searches', async (req, res) => {
-  const searches = await CityWeather.find().sort({ searchedAt: -1 });
-  res.json(searches);
-});
-
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
