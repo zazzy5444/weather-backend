@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -15,5 +16,13 @@
     "express": "^5.1.0",
     "mongoose": "^8.16.3"
   },
-  "description": ""
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zazzy5444/weather-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zazzy5444/weather-backend/issues"
+  },
+  "homepage": "https://github.com/zazzy5444/weather-backend#readme"
 }
